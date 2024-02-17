@@ -27,9 +27,20 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 export PATH="$HOME/bin:$PATH"
 
-alias vim=nvim
-alias ls=exa
-alias cat=bat
+if command -v nvim &> /dev/null
+then
+  alias vim=nvim
+fi
+
+if command -v bat &> /dev/null
+then
+  alias cat=bat
+fi
+
+if command -v exa &> /dev/null
+then
+  alias ls=exa
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
