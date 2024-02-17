@@ -25,6 +25,7 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+export PATH="$HOME/.local/bin/:$PATH"
 export PATH="$HOME/bin:$PATH"
 
 if command -v nvim &> /dev/null
