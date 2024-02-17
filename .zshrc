@@ -43,5 +43,5 @@ fi
 # Conda
 conda_path=$HOME/miniconda3/bin/conda
 if command -v $conda_path &> /dev/null; then
-  eval $($conda_path shell.zsh activate)
+  eval "$($conda_path shell.zsh hook)"
 fi
