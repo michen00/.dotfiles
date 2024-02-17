@@ -42,18 +42,9 @@ then
   alias ls=exa
 fi
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/hudson/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/hudson/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/hudson/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/hudson/miniconda3/bin:$PATH"
-    fi
+# Conda
+conda_path=$HOME/miniconda3/bin/conda
+if command -v $conda_path &> /dev/null
+then
+  eval $($conda_path shell.zsh activate)
 fi
-unset __conda_setup
-# <<< conda initialize <<<
-
