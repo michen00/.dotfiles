@@ -28,24 +28,20 @@ export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 export PATH="$HOME/.local/bin/:$PATH"
 export PATH="$HOME/bin:$PATH"
 
-if command -v nvim &> /dev/null
-then
+if command -v nvim &> /dev/null; then
   alias vim=nvim
 fi
 
-if command -v bat &> /dev/null
-then
+if command -v bat &> /dev/null; then
   alias cat=bat
 fi
 
-if command -v exa &> /dev/null
-then
+if command -v exa &> /dev/null; then
   alias ls=exa
 fi
 
 # Conda
 conda_path=$HOME/miniconda3/bin/conda
-if command -v $conda_path &> /dev/null
-then
+if command -v $conda_path &> /dev/null; then
   eval $($conda_path shell.zsh activate)
 fi
