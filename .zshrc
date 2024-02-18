@@ -45,3 +45,8 @@ conda_path=$HOME/miniconda3/bin/conda
 if command -v $conda_path &> /dev/null; then
   eval "$($conda_path shell.zsh hook)"
 fi
+
+# zoxide
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh --cmd cd)"
+fi
