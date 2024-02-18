@@ -1,0 +1,9 @@
+[user]
+	email = hncooper96@gmail.com
+	name = Hudson Cooper
+[init]
+	defaultBranch = master
+[core]
+	editor = vim
+[pull]
+	rebase = true
