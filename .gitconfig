@@ -1,6 +1,7 @@
 [user]
 	email = hncooper96@gmail.com
 	name = Hudson Cooper
+	signingkey = hncooper96@gmail.com
 [init]
 	defaultBranch = master
 [core]
