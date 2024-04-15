@@ -17,12 +17,13 @@ source ~/.zsh/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Plugins
-source ~/.zsh/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source ~/.zsh/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+# source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 # source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-autocomplete)
 
 # Env variables and aliases
-export SSH_KEY_PATH="~/.ssh/rsa_id"
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 export PATH="$HOME/.local/bin/:$PATH"
