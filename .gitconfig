@@ -1,12 +1,19 @@
 [user]
-	email = hncooper96@gmail.com
-	name = Hudson Cooper
-	signingkey = hncooper96@gmail.com
+	email = michael.chen@element.com
+	name = Michael I Chen
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJQhzLieT9B4JxZ1QnI01aP4Wg+oKNjd6/qL8xCxOch+
 [init]
-	defaultBranch = master
+	defaultBranch = main
 [core]
-	editor = vim
+	editor = code
 [pull]
 	rebase = true
 [alias]
 	tree = log --graph --decorate --pretty=oneline --abbrev-commit
+
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
