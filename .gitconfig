@@ -5,7 +5,7 @@
 [init]
 	defaultBranch = main
 [core]
-	editor = code
+	editor = code --wait
 [pull]
 	rebase = true
 [alias]
