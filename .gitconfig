@@ -1,7 +1,7 @@
 [user]
 	email = michael.chen@element.com
 	name = Michael I Chen
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJQhzLieT9B4JxZ1QnI01aP4Wg+oKNjd6/qL8xCxOch+
+	signingkey = ssh-ed25519 ...
 [init]
 	defaultBranch = main
 [core]
