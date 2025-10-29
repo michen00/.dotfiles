@@ -1,64 +1,63 @@
-# add homebrew to path
-eval "$(/opt/homebrew/bin/brew shellenv)"
+##### Homebrew (Apple Silicon) #################################################
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
-eval "$(conda shell.$(basename $SHELL) hook)"
+##### Conda ####################################################################
+# Prefer an existing conda in PATH; otherwise try Miniforge.
+if command -v conda >/dev/null 2>&1; then
+  eval "$(conda shell.zsh hook)"
+else
+  conda_path="$HOME/miniforge3/bin/conda"
+  if [ -x "$conda_path" ]; then
+    eval "$("$conda_path" shell.zsh hook)"
+  fi
+fi
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+##### Powerlevel10k instant prompt (keep near top) #############################
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Path to your oh-my-zsh installation.
+##### zinit (plugin manager) ###################################################
+# Optional: used by OMZ snippets, but not strictly required for zinit.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Theme
-# source ~/.zsh/powerlevel10k/powerlevel10k.zsh-theme
-# ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# Set the directory we want to store zinit and plugins
+# Where to store zinit
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-
-# Download Zinit, if it's not there yet
 if [ ! -d "$ZINIT_HOME" ]; then
-   mkdir -p "$(dirname "$ZINIT_HOME")"
-   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+  mkdir -p "$(dirname "$ZINIT_HOME")"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
-
-# Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
-# Add in Powerlevel10k
+# Theme: Powerlevel10k
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# Add in zsh plugins
+# Plugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
 
-# Add in snippets
+# Oh My Zsh snippets via zinit
 zinit snippet OMZP::git
 zinit snippet OMZP::sudo
 zinit snippet OMZP::archlinux
 zinit snippet OMZP::command-not-found
 
-# Load completions
+# Completions/init
 fpath=(~/.zsh/completions $fpath)
 autoload -Uz compinit && compinit
 zinit cdreplay -q
 
-# Keybindings
+##### Shell behavior / history / keybindings ##################################
 bindkey "^[[3~" delete-char
 
-# History
 HISTSIZE=5000
-HISTFILE=~/.zsh_history
+HISTFILE="$HOME/.zsh_history"
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
 setopt appendhistory
@@ -77,41 +76,39 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-# Make interactive comments comments again...
+# Make interactive comments... comments again.
 setopt interactive_comments
 
-# Plugins list (kept for reference with OMZ snippets)
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-autocomplete)
-
-# Env variables and aliases
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
+##### PATH #####################################################################
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
-export PATH="$HOME/.local/bin/:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
 
+##### Editor ###################################################################
 export EDITOR='code'
 
-# Aliases
-alias grep="grep -In --color=auto"
-
-if command -v nvim &> /dev/null; then
-  alias vim=nvim
+##### Smart aliases ############################################################
+# Tool-based replacements
+if command -v nvim >/dev/null 2>&1; then
+  alias vim='nvim'
 fi
-
-if command -v bat &> /dev/null; then
-  alias cat=bat
+if command -v bat >/dev/null 2>&1; then
+  alias cat='bat'
 fi
-
-if command -v eza &> /dev/null; then
-  alias ls=eza
+if command -v eza >/dev/null 2>&1; then
+  alias ls='eza'
 else
   alias ls='ls --color=auto'
 fi
 
-alias chx='chmod +x'
+# Common quality-of-life
+alias grep="grep -In --color=auto"
 alias ll='ls -alF'
+alias chx='chmod +x'
 alias pi='python -m pip install'
+
+# Git
 alias ga='git add'
 alias gc='git commit'
 alias gcm='git commit -m'
@@ -119,92 +116,77 @@ alias gco='git checkout'
 alias gcb='git checkout -b'
 alias gcl='git clone'
 alias gs='git status'
-alias gpg_login='echo "test" | gpg --pinentry-mode loopback --clearsign --passphrase-file ~/.gpg_passphrase'
 alias checkpoint='git add . && git commit -m "checkpoint" && git push'
+
+# GPG quick login (loopback demo)
+alias gpg_login='echo "test" | gpg --pinentry-mode loopback --clearsign --passphrase-file ~/.gpg_passphrase'
+
+# K9s (cluster shortcut)
 alias _k9s='k9s --namespace ml --kubeconfig ~/creds/element-kube-dev.yaml'
 
+##### Functions ################################################################
 mergewith() {
-    # Check if a reference branch is provided
-    if [ "$#" -ne 1 ]; then
-        echo "Usage: update_git_branch <reference_branch>"
-        return 1
-    fi
+  if [ "$#" -ne 1 ]; then
+    echo "Usage: mergewith <reference_branch>"
+    return 1
+  fi
+  local reference_branch="$1"
 
-    local reference_branch=$1
+  local current_branch
+  current_branch="$(git rev-parse --abbrev-ref HEAD)" || {
+    echo "Error: Failed to determine the current git branch."
+    return 1
+  }
+  echo "Current branch is $current_branch"
 
-    # Capture the current branch name
-    local current_branch
-    current_branch=$(git rev-parse --abbrev-ref HEAD)
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to determine the current git branch."
-        return 1
-    fi
+  git checkout "$reference_branch" || {
+    echo "Error: Failed to checkout the reference branch '$reference_branch'."
+    return 1
+  }
+  git pull || {
+    echo "Error: Failed to pull the latest changes for branch '$reference_branch'."
+    return 1
+  }
 
-    echo "Current branch is $current_branch"
+  git checkout "$current_branch" || {
+    echo "Error: Failed to checkout the current branch '$current_branch'."
+    return 1
+  }
+  git pull || {
+    echo "Error: Failed to pull the latest changes for branch '$current_branch'."
+    return 1
+  }
 
-    # Checkout the reference branch and pull the latest changes
-    git checkout "$reference_branch"
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to checkout the reference branch '$reference_branch'."
-        return 1
-    fi
+  git merge "$reference_branch" || {
+    echo "Error: Failed to merge branch '$reference_branch' into '$current_branch'."
+    return 1
+  }
 
-    git pull
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to pull the latest changes for branch '$reference_branch'."
-        return 1
-    fi
-
-    # Checkout the current branch again and pull the latest changes
-    git checkout "$current_branch"
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to checkout the current branch '$current_branch'."
-        return 1
-    fi
-
-    git pull
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to pull the latest changes for branch '$current_branch'."
-        return 1
-    fi
-
-    # Merge the reference branch into the current branch
-    git merge "$reference_branch"
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to merge branch '$reference_branch' into '$current_branch'."
-        return 1
-    fi
-
-    echo "Successfully updated $current_branch with changes from $reference_branch."
+  echo "Successfully updated $current_branch with changes from $reference_branch."
 }
 
 reinstall() {
-    conda activate base
-    mamba remove --name pdf2tests --all
-    mamba create -n pdf2tests -y python=3.11 pip ipython
-    conda activate pdf2tests
-    make install-deps
-    python -m pip install graphviz
-    python -m pip install \
-        --config-setting="--global-option=build_ext" \
-        --config-setting="--global-option=-I$(brew --prefix graphviz)/include/" \
-        --config-setting="--global-option=-L$(brew --prefix graphviz)/lib/" \
-        pygraphviz
-    python -m pip install ipykernel
-    python -m ipykernel install --user --name=pdf2tests
+  conda activate base
+  mamba remove --name pdf2tests --all
+  mamba create -n pdf2tests -y python=3.11 pip ipython
+  conda activate pdf2tests
+  make install-deps
+  python -m pip install graphviz
+  python -m pip install \
+    --config-setting="--global-option=build_ext" \
+    --config-setting="--global-option=-I$(brew --prefix graphviz)/include/" \
+    --config-setting="--global-option=-L$(brew --prefix graphviz)/lib/" \
+    pygraphviz
+  python -m pip install ipykernel
+  python -m ipykernel install --user --name=pdf2tests
 }
 
-# conda
-conda_path=$HOME/miniforge3/bin/conda
-if command -v "$conda_path" &> /dev/null; then
-  eval "$($conda_path shell.zsh hook)"
-fi
-
-# zoxide
-if command -v zoxide &> /dev/null; then
+##### Extras ###################################################################
+# zoxide (better cd)
+if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh --cmd cd)"
 fi
 
-source <(cat "$HOME/.env")
-
-. "$HOME/.local/bin/env"
+# Env files (guarded)
+[ -f "$HOME/.env" ] && source "$HOME/.env"
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
