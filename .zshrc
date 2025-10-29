@@ -1,196 +1,323 @@
-##### Homebrew (Apple Silicon) #################################################
-if [ -x /opt/homebrew/bin/brew ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+export PATH="/usr/local/bin:$PATH"
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${USER}.zsh" ]]; then
+	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${USER}.zsh"
 fi
 
-##### Conda ####################################################################
-# Prefer an existing conda in PATH; otherwise try Miniforge.
-if command -v conda >/dev/null 2>&1; then
-  eval "$(conda shell.zsh hook)"
-else
-  conda_path="$HOME/miniforge3/bin/conda"
-  if [ -x "$conda_path" ]; then
-    eval "$("$conda_path" shell.zsh hook)"
-  fi
-fi
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-##### Powerlevel10k instant prompt (keep near top) #############################
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-##### zinit (plugin manager) ###################################################
-# Optional: used by OMZ snippets, but not strictly required for zinit.
-export ZSH="$HOME/.oh-my-zsh"
-
-# Where to store zinit
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-if [ ! -d "$ZINIT_HOME" ]; then
-  mkdir -p "$(dirname "$ZINIT_HOME")"
-  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
-source "${ZINIT_HOME}/zinit.zsh"
-
-# Theme: Powerlevel10k
-zinit ice depth=1
-zinit light romkatv/powerlevel10k
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-
-# Plugins
-zinit light zsh-users/zsh-syntax-highlighting
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
-zinit light Aloxaf/fzf-tab
-
-# Oh My Zsh snippets via zinit
-zinit snippet OMZP::git
-zinit snippet OMZP::sudo
-zinit snippet OMZP::archlinux
-zinit snippet OMZP::command-not-found
-
-# Completions/init
-fpath=(~/.zsh/completions $fpath)
-autoload -Uz compinit && compinit
-zinit cdreplay -q
-
-##### Shell behavior / history / keybindings ##################################
-bindkey "^[[3~" delete-char
-
-HISTSIZE=5000
-HISTFILE="$HOME/.zsh_history"
-SAVEHIST=$HISTSIZE
-HISTDUP=erase
-setopt appendhistory
-setopt sharehistory
-setopt hist_ignore_space
-setopt hist_ignore_all_dups
-setopt hist_save_no_dups
-setopt hist_ignore_dups
-setopt hist_find_no_dups
-HIST_STAMPS="%Y-%m-%d %H:%M:%S"
-
-# Completion styling
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' menu no
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
-
-# Make interactive comments... comments again.
-setopt interactive_comments
-
-##### PATH #####################################################################
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin/:$PATH"
 export PATH="$HOME/bin:$PATH"
 
-##### Editor ###################################################################
+EDITOR='code'
+
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# ZSH_THEME="gnzh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+zstyle ':omz:update' mode auto # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+
+# Uncomment the following line to change how often to auto-update (in days).
+# zstyle ':omz:update' frequency 13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+HIST_STAMPS="%Y-%m-%d %H:%M:%S"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# install commands for plugins
+# curl -L git.io/antigen > antigen.zsh
+# brew install conda-zsh-completion
+# git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# git clone https://github.com/conda-incubator/conda-zsh-completion ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/conda-zsh-completion
+# git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
+
+source ~/antigen.zsh
+# antigen init ~/.antigenrc
+
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+
+# Bundles
+antigen bundle command-not-found
+antigen bundle docker
+antigen bundle git
+antigen bundle pip
+
+# External plugins
+antigen bundle esc/conda-zsh-completion
+antigen bundle zdharma-continuum/fast-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-completions
+# antigen bundle zsh-users/zsh-syntax-highlighting
+
+# Load the theme.
+# antigen theme robbyrussell
+
+# Tell Antigen that you're done.
+antigen apply
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+	command-not-found
+	docker
+	git
+	pip
+	# conda-zsh-completion
+	# fast-syntax-highlighting
+	# zsh-autocomplete
+	# zsh-autosuggestions
+	# zsh-completions
+	# zsh-syntax-highlighting
+)
+
+# source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+# source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+source $ZSH/oh-my-zsh.sh
+
+# autoload -U compinit && compinit
+autoload -Uz compinit && compinit
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
 export EDITOR='code'
 
-##### Smart aliases ############################################################
-# Tool-based replacements
-if command -v nvim >/dev/null 2>&1; then
-  alias vim='nvim'
-fi
-if command -v bat >/dev/null 2>&1; then
-  alias cat='bat'
-fi
-if command -v eza >/dev/null 2>&1; then
-  alias ls='eza'
-else
-  alias ls='ls --color=auto'
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+if command -v nvim &>/dev/null; then
+	alias vim=nvim
 fi
 
-# Common quality-of-life
-alias grep="grep -In --color=auto"
-alias ll='ls -alF'
+if command -v bat &>/dev/null; then
+	alias cat=bat
+fi
+
+if command -v exa &>/dev/null; then
+	alias ls=exa
+fi
+
 alias chx='chmod +x'
+alias grep='grep --color=auto'
+alias ll='ls -alF --color=auto'
+alias ls='ls --color=auto'
 alias pi='python -m pip install'
 
-# Git
-alias ga='git add'
-alias gc='git commit'
-alias gcm='git commit -m'
 alias gco='git checkout'
-alias gcb='git checkout -b'
-alias gcl='git clone'
+alias gcm='git commit -m'
 alias gs='git status'
-alias checkpoint='git add . && git commit -m "checkpoint" && git push'
+alias gst='git stash'
+alias gfix='git commit --amend --no-edit'
 
-# GPG quick login (loopback demo)
-alias gpg_login='echo "test" | gpg --pinentry-mode loopback --clearsign --passphrase-file ~/.gpg_passphrase'
+alias checkpoint='git add . && git commit -m "chore: checkpoint" --no-verify && git push'
 
-# K9s (cluster shortcut)
-# Project-specific aliases (such as for k9s) should be placed in a separate file (e.g., ~/.zshrc.local or ~/.zshrc.project)
-# and sourced here if needed. Example:
-# if [ -f ~/.zshrc.local ]; then
-#   source ~/.zshrc.local
-# fi
+# alias gpg_login='echo "test" | gpg --pinentry-mode loopback --clearsign --passphrase-file ~/.gpg_passphrase'
 
-##### Functions ################################################################
-mergewith() {
-  if [ "$#" -ne 1 ]; then
-    echo "Usage: mergewith <reference_branch>"
-    return 1
-  fi
-  local reference_branch="$1"
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-  local current_branch
-  current_branch="$(git rev-parse --abbrev-ref HEAD)" || {
-    echo "Error: Failed to determine the current git branch."
-    return 1
-  }
-  echo "Current branch is $current_branch"
-
-  git checkout "$reference_branch" || {
-    echo "Error: Failed to checkout the reference branch '$reference_branch'."
-    return 1
-  }
-  git pull || {
-    echo "Error: Failed to pull the latest changes for branch '$reference_branch'."
-    return 1
-  }
-
-  git checkout "$current_branch" || {
-    echo "Error: Failed to checkout the current branch '$current_branch'."
-    return 1
-  }
-  git pull || {
-    echo "Error: Failed to pull the latest changes for branch '$current_branch'."
-    return 1
-  }
-
-  git merge "$reference_branch" || {
-    echo "Error: Failed to merge branch '$reference_branch' into '$current_branch'."
-    return 1
-  }
-
-  echo "Successfully updated $current_branch with changes from $reference_branch."
-}
-
-reinstall() {
-  conda activate base
-  mamba remove --name pdf2tests --all
-  mamba create -n pdf2tests -y python=3.11 pip ipython
-  conda activate pdf2tests
-  make install-deps
-  python -m pip install graphviz
-  python -m pip install \
-    --config-setting="--global-option=build_ext" \
-    --config-setting="--global-option=-I$(brew --prefix graphviz)/include/" \
-    --config-setting="--global-option=-L$(brew --prefix graphviz)/lib/" \
-    pygraphviz
-  python -m pip install ipykernel
-  python -m ipykernel install --user --name=pdf2tests
-}
-
-##### Extras ###################################################################
-# zoxide (better cd)
-if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh --cmd cd)"
+# zoxide
+if command -v zoxide &>/dev/null; then
+	eval "$(zoxide init zsh --cmd cd)"
 fi
 
-# Env files (guarded)
-[ -f "$HOME/.env" ] && source "$HOME/.env"
-[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+revert-to() {
+	if [ "$#" -ne 2 ]; then
+		echo "Usage: revert-to <commit-hash> <file-path>"
+		return 1
+	fi
+
+	commit_hash="$1"
+	file_path="$2"
+
+	# Check for unstored changes in the file
+	if git status --short "$file_path" | grep -q "^[ MADRCU?]"; then
+		echo "The file '$file_path' has unstored changes."
+		read -p "Are you sure you want to revert (y/n)? " confirm
+		case "$confirm" in
+		[yY][eE][sS] | [yY]) ;;
+		*)
+			echo "Aborted."
+			return 0
+			;;
+		esac
+	fi
+
+	# Attempt to revert the file to the specified commit hash
+	if git cat-file -e "$commit_hash"^{commit} 2>/dev/null; then
+		git checkout "$commit_hash"^ -- "$file_path"
+		if [ $? -eq 0 ]; then
+			echo "Successfully reverted '$file_path' to commit '$commit_hash'."
+		else
+			echo "Failed to revert '$file_path'."
+			return 1
+		fi
+	else
+		echo "Invalid commit hash: '$commit_hash'."
+		return 1
+	fi
+}
+
+alias godmode='chmod -R u+rwx'
+alias venvnow='rm -rf .venv && python -m venv .venv && source .venv/bin/activate && python -m pip install --upgrade pip'
+alias ip='python -m IPython'
+alias mainupdate='update-mine main'
+
+export PATH="$PATH:$(go env GOPATH)/bin"
+
+# Added by Windsurf
+export PATH="/Users/Michael.Chen/.codeium/windsurf/bin:$PATH"
+
+export BETTER_EXCEPTIONS=1
+
+# RegEx alternation for conventional commit types
+CONVENTIONAL_COMMITS="build|chore|ci|docs|feat|fix|perf|refactor|style|test|revert"
+
+conventional_commit_widget() {
+	# Intercepts command line input when the user presses Enter.
+	# If the input matches the pattern of a conventional commit message
+	# enclosed in single quotes (e.g., 'feat: add new feature'),
+	# rewrites the command to a corresponding `git commit -m` invocation,
+	# preserving any additional git commit arguments provided after the message.
+	#
+	# Pattern supported:
+	#   '<type>(<scope>)?!?: <message>' [extra git args...]
+	# where <type> is one of the conventional commit types (feat, fix, chore, etc.).
+	#
+	# This enables a seamless, efficient workflow for writing conventional
+	# commits directly in the terminal with minimal keystrokes
+	# while allowing flexibility for additional git commit flags.
+	# You can save up to 14 keystrokes per commit message this way
+	# (15 if you count the Shift key for a double quote).
+	#
+	# Example usage:
+	#
+	#   'feat: add a feature'
+	#     --->
+	#   git commit -m 'feat: add a feature'
+	#
+	#   'chore(optional-scope)!: make a breaking change' --no-verify
+	#     --->
+	#   git commit -m 'chore(optional-scope)!: make a breaking change' --no-verify
+	#
+	pattern="^'(${CONVENTIONAL_COMMITS})((\(.*\))?!?:)([^']+)'(.*)$"
+	if [[ "$BUFFER" =~ $pattern ]]; then
+		local msg="${match[1]}${match[2]}${match[4]}"
+		local args="${match[5]}"
+		BUFFER="git commit -m '${msg}'${args}"
+		print -s -- "'${msg}'${args}"
+		fc -AI
+	fi
+	zle accept-line
+}
+# Invoked as a Zsh line editor (zle) widget bound to the Enter key.
+zle -N conventional_commit_widget
+bindkey '^M' conventional_commit_widget
+
+# See https://www.conventionalcommits.org/en/v1.0.0/ for more details on the format.
+# If you want to use a different key binding, you can change '^M' to another key sequence.
+
+conventional_commit_length_check() {
+	# This function checks the length of the commit message summary
+	# and displays a warning if it exceeds 50 characters.
+	pattern="^'(${CONVENTIONAL_COMMITS}).+$"
+	if [[ $BUFFER =~ $pattern ]] &&
+		((${#BUFFER} > 51)) &&
+		[[ $BUFFER == *:* ]] &&
+		[[ ${BUFFER:51:1} != "'" ]] &&
+		[[ ${BUFFER:1:50} != *"'"* ]]; then
+		zle -M "⚠️ Conventional commit message summary is longer than 50 characters!"
+		return
+	fi
+	zle -M "" # Clear the message if no issues
+}
+# Bind the hook to zle events
+zle -N zle-line-pre-redraw conventional_commit_length_check
+
+fpath+=~/.zfunc
+autoload -Uz compinit
+compinit
