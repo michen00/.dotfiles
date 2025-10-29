@@ -122,7 +122,11 @@ alias checkpoint='git add . && git commit -m "checkpoint" && git push'
 alias gpg_login='echo "test" | gpg --pinentry-mode loopback --clearsign --passphrase-file ~/.gpg_passphrase'
 
 # K9s (cluster shortcut)
-alias _k9s='k9s --namespace ml --kubeconfig ~/creds/element-kube-dev.yaml'
+# Project-specific aliases (such as for k9s) should be placed in a separate file (e.g., ~/.zshrc.local or ~/.zshrc.project)
+# and sourced here if needed. Example:
+# if [ -f ~/.zshrc.local ]; then
+#   source ~/.zshrc.local
+# fi
 
 ##### Functions ################################################################
 mergewith() {
