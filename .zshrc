@@ -1,13 +1,10 @@
-# add homebrew to path
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
-eval "$(conda shell.$(basename $SHELL) hook)"
+export PATH="/usr/local/bin:$PATH"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${USER}.zsh" ]]; then
+	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${USER}.zsh"
 fi
 
 # If you come from bash you might have to change your $PATH.
@@ -17,6 +14,8 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 export PATH="$HOME/.local/bin/:$PATH"
 export PATH="$HOME/bin:$PATH"
+
+EDITOR='code'
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -43,7 +42,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment one of the following lines to change the auto-update behavior
 # zstyle ':omz:update' mode disabled  # disable automatic updates
-zstyle ':omz:update' mode auto      # update automatically without asking
+zstyle ':omz:update' mode auto # update automatically without asking
 # zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
@@ -105,11 +104,10 @@ antigen bundle pip
 
 # External plugins
 antigen bundle esc/conda-zsh-completion
-antigen bundle marlonrichert/zsh-autocomplete@main
-# antigen bundle zdharma-continuum/fast-syntax-highlighting
+antigen bundle zdharma-continuum/fast-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-completions
-antigen bundle zsh-users/zsh-syntax-highlighting
+# antigen bundle zsh-users/zsh-syntax-highlighting
 
 # Load the theme.
 # antigen theme robbyrussell
@@ -123,16 +121,16 @@ antigen apply
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    command-not-found
-    docker
-    git
-    pip
-    # conda-zsh-completion
-    # fast-syntax-highlighting
-    # zsh-autocomplete
-    # zsh-autosuggestions
-    # zsh-completions
-    # zsh-syntax-highlighting
+	command-not-found
+	docker
+	git
+	pip
+	# conda-zsh-completion
+	# fast-syntax-highlighting
+	# zsh-autocomplete
+	# zsh-autosuggestions
+	# zsh-completions
+	# zsh-syntax-highlighting
 )
 
 # source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
@@ -171,123 +169,155 @@ export EDITOR='code'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-if command -v nvim &> /dev/null; then
-  alias vim=nvim
+if command -v nvim &>/dev/null; then
+	alias vim=nvim
 fi
 
-if command -v bat &> /dev/null; then
-  alias cat=bat
+if command -v bat &>/dev/null; then
+	alias cat=bat
 fi
 
-if command -v exa &> /dev/null; then
-  alias ls=exa
+if command -v exa &>/dev/null; then
+	alias ls=exa
 fi
 
 alias chx='chmod +x'
 alias grep='grep --color=auto'
-alias ll='ls -alF'
+alias ll='ls -alF --color=auto'
 alias ls='ls --color=auto'
 alias pi='python -m pip install'
 
-alias ga='git add'
-alias gc='git commit'
-alias gcb='git checkout -b'
-alias gcl='git clone'
-alias gcm='git commit -m'
 alias gco='git checkout'
+alias gcm='git commit -m'
 alias gs='git status'
+alias gst='git stash'
+alias gfix='git commit --amend --no-edit'
 
-alias checkpoint='git add . && git commit -m "checkpoint" && git push'
+alias checkpoint='git add . && git commit -m "chore: checkpoint" --no-verify && git push'
 
-alias gpg_login='echo "test" | gpg --pinentry-mode loopback --clearsign --passphrase-file ~/.gpg_passphrase'
-
-mergewith() {
-    # Check if a reference branch is provided
-    if [ "$#" -ne 1 ]; then
-        echo "Usage: update_git_branch <reference_branch>"
-        return 1
-    fi
-
-    local reference_branch=$1
-
-    # Capture the current branch name
-    local current_branch=$(git rev-parse --abbrev-ref HEAD)
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to determine the current git branch."
-        return 1
-    fi
-
-    echo "Current branch is $current_branch"
-
-    # Checkout the reference branch and pull the latest changes
-    git checkout $reference_branch
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to checkout the reference branch '$reference_branch'."
-        return 1
-    fi
-
-    git pull
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to pull the latest changes for branch '$reference_branch'."
-        return 1
-    fi
-
-    # Checkout the current branch again and pull the latest changes
-    git checkout $current_branch
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to checkout the current branch '$current_branch'."
-        return 1
-    fi
-
-    git pull
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to pull the latest changes for branch '$current_branch'."
-        return 1
-    fi
-
-    # Merge the reference branch into the current branch
-    git merge $reference_branch
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to merge branch '$reference_branch' into '$current_branch'."
-        return 1
-    fi
-
-    echo "Successfully updated $current_branch with changes from $reference_branch."
-}
+# alias gpg_login='echo "test" | gpg --pinentry-mode loopback --clearsign --passphrase-file ~/.gpg_passphrase'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# conda
-conda_path=$HOME/miniforge3/bin/conda
-if command -v $conda_path &> /dev/null; then
-  eval "$($conda_path shell.zsh hook)"
-fi
-
 # zoxide
-if command -v zoxide &> /dev/null; then
-  eval "$(zoxide init zsh --cmd cd)"
+if command -v zoxide &>/dev/null; then
+	eval "$(zoxide init zsh --cmd cd)"
 fi
 
-reinstall() {
-    conda activate base
-    mamba remove --name pdf2tests --all
-    mamba create -n pdf2tests -y python=3.11 pip ipython
-    conda activate pdf2tests
-    make install-deps
-    python -m pip install graphviz
-    python -m pip install \
-        --config-setting="--global-option=build_ext" \
-        --config-setting="--global-option=-I$(brew --prefix graphviz)/include/" \
-        --config-setting="--global-option=-L$(brew --prefix graphviz)/lib/" \
-        pygraphviz
-    python -m pip install ipykernel
-    python -m ipykernel install --user --name=pdf2tests
+revert-to() {
+	if [ "$#" -ne 2 ]; then
+		echo "Usage: revert-to <commit-hash> <file-path>"
+		return 1
+	fi
+
+	commit_hash="$1"
+	file_path="$2"
+
+	# Check for unstored changes in the file
+	if git status --short "$file_path" | grep -q "^[ MADRCU?]"; then
+		echo "The file '$file_path' has unstored changes."
+		read -p "Are you sure you want to revert (y/n)? " confirm
+		case "$confirm" in
+		[yY][eE][sS] | [yY]) ;;
+		*)
+			echo "Aborted."
+			return 0
+			;;
+		esac
+	fi
+
+	# Attempt to revert the file to the specified commit hash
+	if git cat-file -e "$commit_hash"^{commit} 2>/dev/null; then
+		git checkout "$commit_hash"^ -- "$file_path"
+		if [ $? -eq 0 ]; then
+			echo "Successfully reverted '$file_path' to commit '$commit_hash'."
+		else
+			echo "Failed to revert '$file_path'."
+			return 1
+		fi
+	else
+		echo "Invalid commit hash: '$commit_hash'."
+		return 1
+	fi
 }
 
-# krp(){
-#     [ -z "$1" ] && echo "Usage: ${FUNCNAME} <pipeline_name>" && return 1
-#     kedro run --pipeline "de_layout_$1" --env astm --params="doc_name=potato,doc_type=astm" # --to-nodes="$1".mark_redline
-# }
+alias godmode='chmod -R u+rwx'
+alias venvnow='rm -rf .venv && python -m venv .venv && source .venv/bin/activate && python -m pip install --upgrade pip'
+alias ip='python -m IPython'
+alias mainupdate='update-mine main'
 
-alias _k9s='k9s --namespace ml --kubeconfig ~/creds/element-kube-dev.yaml'
+export PATH="$PATH:$(go env GOPATH)/bin"
+
+# Added by Windsurf
+export PATH="/Users/Michael.Chen/.codeium/windsurf/bin:$PATH"
+
+export BETTER_EXCEPTIONS=1
+
+# RegEx alternation for conventional commit types
+CONVENTIONAL_COMMITS="build|chore|ci|docs|feat|fix|perf|refactor|style|test|revert"
+
+conventional_commit_widget() {
+	# Intercepts command line input when the user presses Enter.
+	# If the input matches the pattern of a conventional commit message
+	# enclosed in single quotes (e.g., 'feat: add new feature'),
+	# rewrites the command to a corresponding `git commit -m` invocation,
+	# preserving any additional git commit arguments provided after the message.
+	#
+	# Pattern supported:
+	#   '<type>(<scope>)?!?: <message>' [extra git args...]
+	# where <type> is one of the conventional commit types (feat, fix, chore, etc.).
+	#
+	# This enables a seamless, efficient workflow for writing conventional
+	# commits directly in the terminal with minimal keystrokes
+	# while allowing flexibility for additional git commit flags.
+	# You can save up to 14 keystrokes per commit message this way
+	# (15 if you count the Shift key for a double quote).
+	#
+	# Example usage:
+	#
+	#   'feat: add a feature'
+	#     --->
+	#   git commit -m 'feat: add a feature'
+	#
+	#   'chore(optional-scope)!: make a breaking change' --no-verify
+	#     --->
+	#   git commit -m 'chore(optional-scope)!: make a breaking change' --no-verify
+	#
+	pattern="^'(${CONVENTIONAL_COMMITS})((\(.*\))?!?:)([^']+)'(.*)$"
+	if [[ "$BUFFER" =~ $pattern ]]; then
+		local msg="${match[1]}${match[2]}${match[4]}"
+		local args="${match[5]}"
+		BUFFER="git commit -m '${msg}'${args}"
+		print -s -- "'${msg}'${args}"
+		fc -AI
+	fi
+	zle accept-line
+}
+# Invoked as a Zsh line editor (zle) widget bound to the Enter key.
+zle -N conventional_commit_widget
+bindkey '^M' conventional_commit_widget
+
+# See https://www.conventionalcommits.org/en/v1.0.0/ for more details on the format.
+# If you want to use a different key binding, you can change '^M' to another key sequence.
+
+conventional_commit_length_check() {
+	# This function checks the length of the commit message summary
+	# and displays a warning if it exceeds 50 characters.
+	pattern="^'(${CONVENTIONAL_COMMITS}).+$"
+	if [[ $BUFFER =~ $pattern ]] &&
+		((${#BUFFER} > 51)) &&
+		[[ $BUFFER == *:* ]] &&
+		[[ ${BUFFER:51:1} != "'" ]] &&
+		[[ ${BUFFER:1:50} != *"'"* ]]; then
+		zle -M "⚠️ Conventional commit message summary is longer than 50 characters!"
+		return
+	fi
+	zle -M "" # Clear the message if no issues
+}
+# Bind the hook to zle events
+zle -N zle-line-pre-redraw conventional_commit_length_check
+
+fpath+=~/.zfunc
+autoload -Uz compinit
+compinit

@@ -1,22 +1,77 @@
 [user]
-	email = michael.chen@element.com
-	name = Michael I Chen
-	signingkey = ssh-ed25519 ...
-[init]
-	defaultBranch = main
-[core]
-	editor = code --wait
-[pull]
-	rebase = true
-[alias]
-	tree = log --graph --decorate --pretty=oneline --abbrev-commit
+    name = Michael I Chen
+    email = michael.chen.0@gmail.com
+    signingkey = michael.chen.0@gmail.com
 
+# Core editor, ignore file, and performance niceties
+[core]
+    editor = code --wait
+    excludesfile = ~/.gitignore
+    fsmonitor = true           # built-in fsmonitor to speed up status
+    untrackedCache = true      # cache untracked state for speed
+
+# Cryptographic signing via SSH + 1Password
 [gpg]
-	format = ssh
+    format = ssh
 [gpg "ssh"]
-	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+    allowedSignersFile = ~/.ssh/allowed_signers
+[credential]
+    helper = 1password
+
+# Commits, diffs, merges, and rebases
 [commit]
-	gpgsign = true
+    gpgsign = true
+    verbose = true
+[diff]
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
+[merge]
+    # (use just 'diff3' if git < 2.3)
+    conflictstyle = zdiff3
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
+[pull]
+    rebase = true
+
+# Branch/Tag behavior
+[branch]
+    autoSetupMerge = simple
+    sort = -committerdate
+[tag]
+    sort = version:refname
+[init]
+    defaultBranch = main
+
+# Network operations
 [push]
-	default = simple
-	autoSetupRemote = true
+    default = simple
+    autoSetupRemote = true
+    followTags = true
+[fetch]
+    prune = true
+    pruneTags = true
+    all = true
+
+# UI/ergonomics
+[column]
+    ui = auto
+[help]
+    autocorrect = prompt
+[alias]
+    tree = log --graph --decorate --pretty=oneline --abbrev-commit
+
+# Rerere because… why the hell not?
+[rerere]
+    enabled = true
+    autoupdate = true
+
+# Git LFS
+[filter "lfs"]
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+    clean = git-lfs clean -- %f
