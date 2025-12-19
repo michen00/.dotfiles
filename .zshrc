@@ -321,3 +321,11 @@ zle -N zle-line-pre-redraw conventional_commit_length_check
 fpath+=~/.zfunc
 autoload -Uz compinit
 compinit
+
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_REDUCE_BLANKS
+
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
