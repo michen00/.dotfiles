@@ -322,10 +322,13 @@ fpath+=~/.zfunc
 autoload -Uz compinit
 compinit
 
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
 setopt APPEND_HISTORY
-setopt SHARE_HISTORY
-setopt INC_APPEND_HISTORY
-setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_REDUCE_BLANKS
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
