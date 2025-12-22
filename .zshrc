@@ -139,9 +139,6 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# autoload -U compinit && compinit
-autoload -Uz compinit && compinit
-
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -320,7 +317,7 @@ zle -N zle-line-pre-redraw conventional_commit_length_check
 
 fpath+=~/.zfunc
 autoload -Uz compinit
-compinit
+compinit -i
 
 HISTFILE=~/.zsh_history
 HISTSIZE=50000
