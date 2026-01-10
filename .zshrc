@@ -1,5 +1,7 @@
 export PATH="/usr/local/bin:$PATH"
 
+skip_global_compinit=1
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -84,36 +86,8 @@ HIST_STAMPS="%Y-%m-%d %H:%M:%S"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # install commands for plugins
-# curl -L git.io/antigen > antigen.zsh
-# brew install conda-zsh-completion
 # git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-# git clone https://github.com/conda-incubator/conda-zsh-completion ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/conda-zsh-completion
 # git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
-
-source ~/antigen.zsh
-# antigen init ~/.antigenrc
-
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
-
-# Bundles
-antigen bundle command-not-found
-antigen bundle docker
-antigen bundle git
-antigen bundle pip
-
-# External plugins
-antigen bundle esc/conda-zsh-completion
-antigen bundle zdharma-continuum/fast-syntax-highlighting
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zsh-users/zsh-completions
-# antigen bundle zsh-users/zsh-syntax-highlighting
-
-# Load the theme.
-# antigen theme robbyrussell
-
-# Tell Antigen that you're done.
-antigen apply
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
@@ -125,17 +99,9 @@ plugins=(
 	docker
 	git
 	pip
-	# conda-zsh-completion
-	# fast-syntax-highlighting
-	# zsh-autocomplete
-	# zsh-autosuggestions
-	# zsh-completions
-	# zsh-syntax-highlighting
+	fast-syntax-highlighting
+	zsh-autosuggestions
 )
-
-# source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-# source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 source $ZSH/oh-my-zsh.sh
 
@@ -240,7 +206,7 @@ revert-to() {
 }
 
 alias godmode='chmod -R u+rwx'
-alias venvnow='rm -rf .venv && python -m venv .venv && source .venv/bin/activate && python -m pip install --upgrade pip'
+alias venvnow='rm -rf .venv && python -m venv .venv && . .venv/bin/activate && python -m pip install --upgrade pip'
 alias ip='python -m IPython'
 alias mainupdate='update-mine main'
 
@@ -248,8 +214,6 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 
 # Added by Windsurf
 export PATH="/Users/Michael.Chen/.codeium/windsurf/bin:$PATH"
-
-export BETTER_EXCEPTIONS=1
 
 # RegEx alternation for conventional commit types
 CONVENTIONAL_COMMITS="build|chore|ci|docs|feat|fix|perf|refactor|style|test|revert"
@@ -316,8 +280,6 @@ conventional_commit_length_check() {
 zle -N zle-line-pre-redraw conventional_commit_length_check
 
 fpath+=~/.zfunc
-autoload -Uz compinit
-compinit -i
 
 HISTFILE=~/.zsh_history
 HISTSIZE=50000
@@ -329,3 +291,7 @@ setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Added by Antigravity
+export PATH="/Users/Michael.Chen/.antigravity/antigravity/bin:$PATH"
